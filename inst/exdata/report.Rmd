@@ -1,0 +1,42 @@
+---
+title: "Water-Sensitive Paper Analysis"
+subtitle: 'Analysis Report'
+output: 
+  html_document:
+    theme: united
+    highlight: haddock
+params:
+  x: NA
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE)
+```
+
+# <span style="color:darkcyan"> Spray parameters
+
+****
+
+```{r}
+y <- as.list(params$x)
+cat("Paper (DETECTED) dimensions:\n")
+sapply(y, function(z) dim(z$binary), USE.NAMES = TRUE)
+```
+
+```{r}
+sapply(y, function(z) {print(z); plot(z)}, USE.NAMES = TRUE) -> null_obj
+```
+
+
+****
+   `r 
+   y <- format(Sys.time(), "%Y", tz="America/Sao_Paulo");
+   dm <- format(Sys.time(), "%a %d/%h", tz="America/Sao_Paulo");
+   h <- format(Sys.time(), "%X", tz="America/Sao_Paulo")
+   `
+<div class="logos"><img src="logo_hydropaper.png" width="90px" align="right"></div>
+
+<font size="1">  Date and time: `r paste(dm, y, h)`
+
+This document was automatically generated with package [hydropaper](https://github.com/arsilva87/hydropaper).
