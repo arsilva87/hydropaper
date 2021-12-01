@@ -1,0 +1,7 @@
+# --------------------------------------
+# on loading hydropaper
+.onAttach <- function(lib, pkg)
+{
+  vers <- read.dcf(file.path(lib, pkg, "DESCRIPTION"), "Version")
+  packageStartupMessage(paste("---\nhydropaper version", vers))
+}
