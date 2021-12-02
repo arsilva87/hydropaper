@@ -11,32 +11,51 @@ params:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo=FALSE, message = FALSE, 
+                      warning = FALSE, comment="")
 ```
 
-# <span style="color:darkcyan"> Spray parameters
 
 ****
 
-```{r}
-y <- as.list(params$x)
-cat("Paper (DETECTED) dimensions:\n")
-sapply(y, function(z) dim(z$binary), USE.NAMES = TRUE)
-```
+### <span style="color:darkcyan"> Paper (detected) dimensions
 
 ```{r}
-sapply(y, function(z) {print(z); plot(z)}, USE.NAMES = TRUE) -> null_obj
+y <- as.list(params$x)
+if(inherits(y, "hydropaper")) {
+  dim(y$binary)
+} else {
+  nlc <- sapply(y, '[[', 'binary', USE.NAMES = TRUE)
+  sapply(nlc, dim)
+}
+```
+
+### <span style="color:darkcyan"> Spray parameters
+
+```{r}
+if(inherits(y, "hydropaper")) {
+  print(y)
+  plot(y)
+} else {
+  for(i in 1:length(y)) {
+    cat(names(y[i]))
+    print(y[[i]])
+    plot(y[[i]])
+  }
+}
 ```
 
 
 ****
    `r 
-   y <- format(Sys.time(), "%Y", tz="America/Sao_Paulo");
-   dm <- format(Sys.time(), "%a %d/%h", tz="America/Sao_Paulo");
-   h <- format(Sys.time(), "%X", tz="America/Sao_Paulo")
+   y <- format(Sys.time(), "%Y");
+   dm <- format(Sys.time(), "%a %d/%h");
+   h <- format(Sys.time(), "%X")
    `
 <div class="logos"><img src="logo_hydropaper.png" width="90px" align="right"></div>
 
 <font size="1">  Date and time: `r paste(dm, y, h)`
 
-This document was automatically generated with package [hydropaper](https://github.com/arsilva87/hydropaper).
+This document was automatically generated with package [hydropaper](https://github.com/arsilva87/hydropaper) 
+
+Powered by *The Master in Plant Protection Program* - [Instituto Federal Goiano](https://www.ifgoiano.edu.br/home/index.php/urutai)  <img draggable="false" role="img" class="emoji" alt="🇧🇷" src="br-flag.svg" width="17px">
