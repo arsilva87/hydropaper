@@ -11,7 +11,8 @@ makeReport(x)
 \code{\link[=analyzePaper]{analyzePaper()}}.}
 }
 \value{
-A HTML will be generated and saved in the working directory.
+A HTML (hydropaper_report.html) will be generated and stored the
+working directory.
 }
 \description{
 Create a document to report the results of the analyses of one or

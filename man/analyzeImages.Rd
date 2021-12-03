@@ -30,6 +30,7 @@ analyses in a run.
 }
 \examples{
 path <- system.file('images', package = 'hydropaper')
+list.files(path)
 analyzeImages(path)
 
 }

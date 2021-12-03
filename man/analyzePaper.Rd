@@ -13,7 +13,7 @@ or a character indicating the path to the image file (.jpg, .jpeg, .png, .tif).}
 \item{paper_dim}{A numeric vector of length 2 indicating the length and
 width (in mm) of the water-sensitive paper.}
 
-\item{distance}{A numeric value indicating the distance from the nozzle
+\item{distance}{A numeric value indicating the distance from the nozzle(s)
 to the target, in order to estimate the spray drift (\%) using the
 'German model' for field crops.}
 
@@ -59,7 +59,8 @@ micrometers.}
 \item{r}{ A character giving a naive recomendation of which products
 are suitable to be sprayed, based on \code{density}.}
 \item{drift}{ A prediction of drift (\%) based on the 'German model' for
-field crops (Rautmann et al., 2001), as function of \code{distance}.}
+field crops (Rautmann et al., 2001), as function of \code{distance}.
+This quantifies a 90th percentile of the drift values.}
 \item{areas}{ A numeric vector containing area of each droplet found.
 If \code{paper_dim} is given in milimeters, then \code{areas} is given in
 squared milimeters.}
@@ -81,6 +82,15 @@ a <- analyzePaper(p1)
 print(a)
 plot(a)
 
+}
+\references{
+Rautmann, D., M. Streloke, R. Winkler (2001) New basic drift values in
+the authorization procedure for plant protection products.
+In: R. Forster & M. Streloke, Workshop on Risk Assessment and Risk
+Mitigation measures in the context of the authorization of plant
+protection products (WORMM) 27.-29. September 1999. Mitteilungen
+aus der Biologischen Bundesanstalt für Land- und Forstwirtschaft,
+Berlin-Dahlem, Heft 381. 2001. 133-141.
 }
 \seealso{
 \code{\link[=detectPaper]{detectPaper()}}

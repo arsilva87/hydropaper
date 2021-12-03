@@ -9,7 +9,7 @@
 #' @param paper_dim A numeric vector of length 2 indicating the length and
 #' width (in mm) of the water-sensitive paper.
 #'
-#' @param distance A numeric value indicating the distance from the nozzle
+#' @param distance A numeric value indicating the distance from the nozzle(s)
 #' to the target, in order to estimate the spray drift (%) using the
 #' 'German model' for field crops.
 #'
@@ -54,7 +54,8 @@
 #'   \item{r}{ A character giving a naive recomendation of which products
 #'   are suitable to be sprayed, based on \code{density}.}
 #'   \item{drift}{ A prediction of drift (%) based on the 'German model' for
-#'   field crops (Rautmann et al., 2001), as function of \code{distance}.}
+#'   field crops (Rautmann et al., 2001), as function of \code{distance}.
+#'   This quantifies a 90th percentile of the drift values.}
 #'   \item{areas}{ A numeric vector containing area of each droplet found.
 #'   If \code{paper_dim} is given in milimeters, then \code{areas} is given in
 #'   squared milimeters.}
@@ -63,6 +64,15 @@
 #'   is given in squared micrometers.}
 #'   \item{binary}{ The binary mask of the segmentation, a numeric matrix.}
 #' }
+#'
+#' @references
+#' Rautmann, D., M. Streloke, R. Winkler (2001) New basic drift values in
+#' the authorization procedure for plant protection products.
+#' In: R. Forster & M. Streloke, Workshop on Risk Assessment and Risk
+#' Mitigation measures in the context of the authorization of plant
+#' protection products (WORMM) 27.-29. September 1999. Mitteilungen
+#' aus der Biologischen Bundesanstalt für Land- und Forstwirtschaft,
+#' Berlin-Dahlem, Heft 381. 2001. 133-141.
 #'
 #' @seealso [detectPaper()]
 #'
@@ -139,7 +149,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
       r <- "insecticides/pre-emergent herbicides"
    } else {r = NULL}
    # drift (German model)
-   drift <- 2.7705*distance^-0.9787
+   drift <- 100 - 2.7705*distance^-0.9787
    # graphics
    if (display.it) {
       display(im, method = "raster")

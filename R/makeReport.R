@@ -6,7 +6,8 @@
 #' @param x An object of class \code{hydropaper}, created with the function
 #' [analyzePaper()].
 #'
-#' @return A HTML will be generated and saved in the working directory.
+#' @return A HTML (hydropaper_report.html) will be generated and stored the
+#' working directory.
 #'
 #' @examples
 #' path <- system.file('images', 'field1.jpg', package = 'hydropaper')
