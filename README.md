@@ -24,7 +24,7 @@ The most common RGB-image formats are accepted, such as .jpg, .png, .tif.
 
 Finally, try to get **as little shadow/sunlight variation as possible over the paper**. It is okay if there is this kind of variation on background, but not over the paper. And no, it does not matter that different images are taken in different light conditions, as long as they are of good quality as the criteria above. We mean something like the image below.
 
-<img src="inst/exdata/light_shadow.jpg" width="35%">
+<img src="inst/exdata/light_shadow.JPG" width="35%">
 
 
 ### How to store the images
