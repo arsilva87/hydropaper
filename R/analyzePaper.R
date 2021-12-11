@@ -49,6 +49,8 @@
 #'   \item{mindrop}{ The minimum diameter of droplets.
 #'   If \code{paper_dim} is given in milimeters, then \code{mindrop} is given in
 #'   micrometers.}
+#'   \item{size_class}{ The percentage of droplets in each of the following
+#'   three classes of diameter: <200, 200-400, >400 micrometers.}
 #'   \item{CVa}{ The coeficient of variation (%) of droplet areas.}
 #'   \item{CVd}{ The coeficient of variation (%) of droplet diameters.}
 #'   \item{r}{ A character giving a naive recomendation of which products
@@ -140,6 +142,8 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    dm <- mean(diams)
    maxdrop <- max(diams)
    mindrop <- min(diams)
+   size_cut <- cut(diams, breaks = c(1, 200, 400, Inf), right = FALSE)
+   size_class <- 100*table(size_cut)/length(diams)
    dens <- round(n/(prod(paper_dim)/100)) # drops/cm2
    if(dens >= 50 & dens <= 70) {
       r <- "contact fungicides"
@@ -162,6 +166,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
                vol = vol, vol_ha = vol_ha,
                md = dm, nmd = dmn, vmd = dmv, d1 = d1, d9 = d9,
                RA = AR, maxdrop = maxdrop, mindrop = mindrop,
+               size_class = size_class,
                CVa = cv(areas), CVd = cv(diams),
                r = r, drift = drift,
                areas = areas, diams = diams, binary = bin)
@@ -172,24 +177,25 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
 # print method --------------------
 print.hydropaper <- function(obj, ...)
 {
-   cat("\n         Water-Sensitive Paper Analysis\n",
-      "\n                     N drops:", obj$ndrops,
-      "\n          Spray coverage (%):", round(obj$coverage, 1),
-      "\n         Density (drops/cm2):", obj$density,
-      "\n  Vol. applied (microliters):", round(obj$vol, 2),
-      "\n            L/ha (predicted):", round(obj$vol_ha, 2),
-      "\nMean diameter (micronmeters):", round(obj$md),
-      "\n           NMD (micrometers):", round(obj$nmd),
-      "\n           VMD (micrometers):", round(obj$vmd),
-      "\n           D.1 (micrometers):", round(obj$d1),
-      "\n           D.9 (micrometers):", round(obj$d9),
-      "\n          Relative amplitude:", round(obj$RA, 2),
-      "\n  Largest drop (micrometers):", round(obj$maxdrop),
-      "\n Smallest drop (micrometers):", round(obj$mindrop),
-      "\n                 CV area (%):", round(obj$CVa, 1),
-      "\n                CV diam. (%):", round(obj$CVd, 1),
-      "\n               Good to spray:", obj$r,
-      "\n                   Drift (%):", round(obj$drift, 1),
+   cat("\n              Water-Sensitive Paper Analysis\n",
+      "\n                            N drops:", obj$ndrops,
+      "\n                 Spray coverage (%):", round(obj$coverage, 1),
+      "\n                Density (drops/cm2):", obj$density,
+      "\n         Vol. applied (microliters):", round(obj$vol, 2),
+      "\n                   L/ha (predicted):", round(obj$vol_ha, 2),
+      "\n       Mean diameter (micronmeters):", round(obj$md),
+      "\n                  NMD (micrometers):", round(obj$nmd),
+      "\n                  VMD (micrometers):", round(obj$vmd),
+      "\n                  D.1 (micrometers):", round(obj$d1),
+      "\n                  D.9 (micrometers):", round(obj$d9),
+      "\n                 Relative amplitude:", round(obj$RA, 2),
+      "\n         Largest drop (micrometers):", round(obj$maxdrop),
+      "\n        Smallest drop (micrometers):", round(obj$mindrop),
+      "\nDiam. class % (<200, 200-400, >400):", round(obj$size_class, 1),
+      "\n                        CV area (%):", round(obj$CVa, 1),
+      "\n                       CV diam. (%):", round(obj$CVd, 1),
+      "\n                      Good to spray:", obj$r,
+      "\n                          Drift (%):", round(obj$drift, 1),
       "\n\n")
 }
 

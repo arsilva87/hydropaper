@@ -54,6 +54,8 @@ micrometers.}
 \item{mindrop}{ The minimum diameter of droplets.
 If \code{paper_dim} is given in milimeters, then \code{mindrop} is given in
 micrometers.}
+\item{size_class}{ The percentage of droplets in each of the following
+three classes of diameter: <200, 200-400, >400 micrometers.}
 \item{CVa}{ The coeficient of variation (\%) of droplet areas.}
 \item{CVd}{ The coeficient of variation (\%) of droplet diameters.}
 \item{r}{ A character giving a naive recomendation of which products
