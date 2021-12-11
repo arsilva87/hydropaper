@@ -47,15 +47,10 @@ if(inherits(y, "hydropaper")) {
 
 
 ****
-   `r 
-   y <- format(Sys.time(), "%Y");
-   dm <- format(Sys.time(), "%a %d/%h");
-   h <- format(Sys.time(), "%X")
-   `
 <div class="logos"><img src="logo_hydropaper.png" width="90px" align="right"></div>
 
-<font size="1">  Date and time: `r paste(dm, y, h)`
+<font size="1">  Date and time: `r Sys.time()`
 
-This document was automatically generated with package [hydropaper](https://github.com/arsilva87/hydropaper) 
+This document was automatically generated with package [hydropaper](https://arsilva87.github.io/hydropaper/) 
 
 Powered by *The Master in Plant Protection Program* - [Instituto Federal Goiano](https://www.ifgoiano.edu.br/home/index.php/urutai)  <img draggable="false" role="img" class="emoji" alt="🇧🇷" src="br-flag.svg" width="17px">
