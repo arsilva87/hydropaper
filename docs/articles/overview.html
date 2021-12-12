@@ -82,7 +82,7 @@
       <h1 data-toc-skip>hydropaper: an overview</h1>
                         <h4 class="author">Anderson Rodrigo da Silva, Wilhan Valsco dos Santos</h4>
             
-            <h4 class="date">2021-12-11</h4>
+            <h4 class="date">2021-12-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/arsilva87/hydropaper/blob/master/vignettes/overview.Rmd"><code>vignettes/overview.Rmd</code></a></small>
       <div class="hidden name"><code>overview.Rmd</code></div>
@@ -91,231 +91,136 @@
 
     
     
+<p>This is an introduction on how to use the package <em>hydropaper</em>. It is important that you have first read some <a href="https://arsilva87.github.io/hydropaper/">basic instructions</a> on how to capture images of water-sensitive papers, specially when they are taken from the crop field.</p>
+<p>The functions rely on the image-handling functions of the package <a href="https://doi.org/doi:10.18129/B9.bioc.EBImage"><em>EBImage</em></a> (Pau et al., 2010), so that images can be read and manipulated using its implementations such as <code><a href="https://rdrr.io/pkg/EBImage/man/io.html">readImage()</a></code>, <code><a href="https://rdrr.io/pkg/EBImage/man/spatial.html">resize()</a></code> and <code><a href="https://rdrr.io/pkg/EBImage/man/spatial.html">rotate()</a></code>.</p>
+<p>To get started, load the package:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/arsilva87/hydropaper">hydropaper</a></span><span class="op">)</span></code></pre></div>
 <div id="detecting-a-paper" class="section level2">
 <h2 class="hasAnchor">
 <a href="#detecting-a-paper" class="anchor"></a>Detecting a paper</h2>
-</div>
-<div id="clipping-manually" class="section level2">
-<h2 class="hasAnchor">
-<a href="#clipping-manually" class="anchor"></a>Clipping manually</h2>
+<p><em>hydropaper</em> is loaded with a pre-trained detector of water-sensitive papers, based on SURF (Speeded Up Robust Features) descriptor. It will search for points in the image being analyzed that are similar to that detector. Then, a red rectangle (horizontal or vertical) likely to wrap the paper is drawn on the image.</p>
+<p>Both an image (class <code>Image</code>) or the path (a <code>character</code>) to an image file (.jpg, .png, .tif) are accepted as argument.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">'images'</span>, <span class="st">'field1.jpg'</span>, package <span class="op">=</span> <span class="st">'hydropaper'</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/detectPaper.html">detectPaper</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></code></pre></div>
+<p><img src="overview_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p>Now the object <code>p1</code> is an image that contains an attribute with the bounding box of the paper in the original image.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">p1</span>, <span class="st">'paper_bbox'</span><span class="op">)</span>
+<span class="co">#&gt;     xmin     ymin     xmax     ymax </span>
+<span class="co">#&gt; 170.7656 186.1319 900.3028 455.6520</span></code></pre></div>
 </div>
 <div id="analyzing-a-paper" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analyzing-a-paper" class="anchor"></a>Analyzing a paper</h2>
-</div>
-<div id="analyzing-multiple-images" class="section level2">
-<h2 class="hasAnchor">
-<a href="#analyzing-multiple-images" class="anchor"></a>Analyzing multiple images</h2>
+<p>Estimating spray parameters such as density of drops per squared centimeters, volumetric median diameter (VMD) of droplets and planty of others is easy. Once you have an image of the paper alone, i.e., either as a result of <code><a href="../reference/detectPaper.html">detectPaper()</a></code> or one that was manually clipped using <code><a href="../reference/clipPaper.html">clipPaper()</a></code> or even just an image file, point it out to <code><a href="../reference/analyzePaper.html">analyzePaper()</a></code>. Notice that the argument <code>paper_dim</code> (in mm) must be passed in order to correctly estimate the parameters. The argument <code>distance</code> (in m) will be used to estimate the drift using the ‘German model’ for field crops (Rautmann et al., 2001). Finally, <code>display.it = TRUE</code> will show the image of the paper with the detected droplets highlighted in cyan.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyzePaper.html">analyzePaper</a></span><span class="op">(</span><span class="va">p1</span>, 
+                   paper_dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">76</span>, <span class="fl">26</span><span class="op">)</span>, 
+                   distance <span class="op">=</span> <span class="fl">0.7</span>, 
+                   display.it <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="overview_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">a1</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;               Water-Sensitive Paper Analysis</span>
+<span class="co">#&gt;  </span>
+<span class="co">#&gt;                             N drops: 493 </span>
+<span class="co">#&gt;                  Spray coverage (%): 13 </span>
+<span class="co">#&gt;                 Density (drops/cm2): 25 </span>
+<span class="co">#&gt;          Vol. applied (microliters): 256.09 </span>
+<span class="co">#&gt;                    L/ha (predicted): 1295.99 </span>
+<span class="co">#&gt;        Mean diameter (micronmeters): 633 </span>
+<span class="co">#&gt;                   NMD (micrometers): 519 </span>
+<span class="co">#&gt;                   VMD (micrometers): 766 </span>
+<span class="co">#&gt;                   D.1 (micrometers): 383 </span>
+<span class="co">#&gt;                   D.9 (micrometers): 1471 </span>
+<span class="co">#&gt;                  Relative amplitude: 1.42 </span>
+<span class="co">#&gt;          Largest drop (micrometers): 2716 </span>
+<span class="co">#&gt;         Smallest drop (micrometers): 100 </span>
+<span class="co">#&gt; Diam. class % (&lt;200, 200-400, &gt;400): 11.6 24.1 64.3 </span>
+<span class="co">#&gt;                         CV area (%): 126.3 </span>
+<span class="co">#&gt;                        CV diam. (%): 70.4 </span>
+<span class="co">#&gt;                       Good to spray: insecticides/pre-emergent herbicides </span>
+<span class="co">#&gt;                           Drift (%): 96.1</span></code></pre></div>
+<p>Would it not be good to see some graphic results? This code below will give an histogram of the droplet diameters, locating VMD, D.1, D.9 and NMD. Furthermore, it will show the volume of droplets deposited on the paper against the diameter.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a1</span><span class="op">)</span></code></pre></div>
+<p><img src="overview_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 </div>
 <div id="making-a-report" class="section level2">
 <h2 class="hasAnchor">
 <a href="#making-a-report" class="anchor"></a>Making a report</h2>
-<p>Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The <code>html_vignette</code> output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The <code>html_vignette</code> format:</p>
-<ul>
-<li>Never uses retina figures</li>
-<li>Has a smaller default figure size</li>
-<li>Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style</li>
-</ul>
+<p>Now that you have done analyzing the paper, <em>hydropaper</em> can also help you to create a report with those results in a HTML file that can be printed out or shared with your partners. Running the code below will generate this file, namely <code>hyropaper_report.html</code>, in the R current working directory.</p>
+<pre><code>makeReport(a1)</code></pre>
 </div>
-<div id="vignette-info" class="section level2">
+<div id="analyzing-multiple-images" class="section level2">
 <h2 class="hasAnchor">
-<a href="#vignette-info" class="anchor"></a>Vignette Info</h2>
-<p>Note the various macros within the <code>vignette</code> section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the <code>title</code> field and the <code>\VignetteIndexEntry</code> to match the title of your vignette.</p>
+<a href="#analyzing-multiple-images" class="anchor"></a>Analyzing multiple images</h2>
+<p><em>– And what about if I have a lot of images?</em> No problem! In this case, <em>hydropaper</em> can detect the paper in every one of them and the automatically make the analyses that we have seen above. Just put all your images in a folder, with no file other than the images, and point the path. Say for example that these two image files are in a folder.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">'images'</span>, package <span class="op">=</span> <span class="st">'hydropaper'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
+<span class="co">#&gt; [1] "field1.JPG" "field2.JPG"</span></code></pre></div>
+<p>The code below will do the analyses in a loop. Note: it works just like <code><a href="../reference/analyzePaper.html">analyzePaper()</a></code>, with the same arguments, except the first one that must be the path of the folder containing the images.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyzeImages.html">analyzeImages</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">a2</span><span class="op">)</span>
+<span class="co">#&gt; $field1.JPG</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;               Water-Sensitive Paper Analysis</span>
+<span class="co">#&gt;  </span>
+<span class="co">#&gt;                             N drops: 493 </span>
+<span class="co">#&gt;                  Spray coverage (%): 13 </span>
+<span class="co">#&gt;                 Density (drops/cm2): 25 </span>
+<span class="co">#&gt;          Vol. applied (microliters): 256.09 </span>
+<span class="co">#&gt;                    L/ha (predicted): 1295.99 </span>
+<span class="co">#&gt;        Mean diameter (micronmeters): 633 </span>
+<span class="co">#&gt;                   NMD (micrometers): 519 </span>
+<span class="co">#&gt;                   VMD (micrometers): 766 </span>
+<span class="co">#&gt;                   D.1 (micrometers): 383 </span>
+<span class="co">#&gt;                   D.9 (micrometers): 1471 </span>
+<span class="co">#&gt;                  Relative amplitude: 1.42 </span>
+<span class="co">#&gt;          Largest drop (micrometers): 2716 </span>
+<span class="co">#&gt;         Smallest drop (micrometers): 100 </span>
+<span class="co">#&gt; Diam. class % (&lt;200, 200-400, &gt;400): 11.6 24.1 64.3 </span>
+<span class="co">#&gt;                         CV area (%): 126.3 </span>
+<span class="co">#&gt;                        CV diam. (%): 70.4 </span>
+<span class="co">#&gt;                       Good to spray: insecticides/pre-emergent herbicides </span>
+<span class="co">#&gt;                           Drift (%): 96.1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $field2.JPG</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;               Water-Sensitive Paper Analysis</span>
+<span class="co">#&gt;  </span>
+<span class="co">#&gt;                             N drops: 18 </span>
+<span class="co">#&gt;                  Spray coverage (%): 0.3 </span>
+<span class="co">#&gt;                 Density (drops/cm2): 1 </span>
+<span class="co">#&gt;          Vol. applied (microliters): 4.96 </span>
+<span class="co">#&gt;                    L/ha (predicted): 25.11 </span>
+<span class="co">#&gt;        Mean diameter (micronmeters): 420 </span>
+<span class="co">#&gt;                   NMD (micrometers): 416 </span>
+<span class="co">#&gt;                   VMD (micrometers): 525 </span>
+<span class="co">#&gt;                   D.1 (micrometers): 359 </span>
+<span class="co">#&gt;                   D.9 (micrometers): 1067 </span>
+<span class="co">#&gt;                  Relative amplitude: 1.35 </span>
+<span class="co">#&gt;          Largest drop (micrometers): 1403 </span>
+<span class="co">#&gt;         Smallest drop (micrometers): 120 </span>
+<span class="co">#&gt; Diam. class % (&lt;200, 200-400, &gt;400): 33.3 16.7 50 </span>
+<span class="co">#&gt;                         CV area (%): 147.2 </span>
+<span class="co">#&gt;                        CV diam. (%): 75 </span>
+<span class="co">#&gt;                       Good to spray: </span>
+<span class="co">#&gt;                           Drift (%): 96.1</span></code></pre></div>
+<p>Good! This object <code>a2</code> is just a list (of length 2 in this case). You can <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> each element of that list by subsetting it with <code>[[</code>, and you can create a HTML report.</p>
+<pre><code>makeReport(a2)</code></pre>
 </div>
-<div id="styles" class="section level2">
+<div id="references" class="section level2">
 <h2 class="hasAnchor">
-<a href="#styles" class="anchor"></a>Styles</h2>
-<p>The <code>html_vignette</code> template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:</p>
-<pre><code>output: 
-  rmarkdown::html_vignette:
-    css: mystyles.css</code></pre>
-</div>
-<div id="figures" class="section level2">
-<h2 class="hasAnchor">
-<a href="#figures" class="anchor"></a>Figures</h2>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="overview_files/figure-html/unnamed-chunk-1-1.png" width="700"><img src="overview_files/figure-html/unnamed-chunk-1-2.png" width="700"></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = "Your figure caption."</code> in <strong>knitr</strong>.</p>
-</div>
-<div id="more-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#more-examples" class="anchor"></a>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math inline">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and tables, e.g. using <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable()</a></code>.</p>
-<table class="table">
-<thead><tr class="header">
-<th align="left"></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td align="left">Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-</tbody>
-</table>
-<p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
-</div>
-<div class="footnotes">
-<hr>
-<ol>
-<li id="fn1"><p>A footnote here.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-</ol>
+<a href="#references" class="anchor"></a>References</h2>
+<p>Gregoire Pau, Florian Fuchs, Oleg Sklyar, Michael Boutros, and Wolfgang Huber (2010): EBImage - an R package for image processing with applications to cellular phenotypes. Bioinformatics, 26(7), pp. 979-981.</p>
+<p>Rautmann, D., M. Streloke, R. Winkler (2001) New basic drift values in the authorization procedure for plant protection products. In: R. Forster &amp; M. Streloke, Workshop on Risk Assessment and Risk Mitigation measures in the context of the authorization of plant protection products (WORMM) 27.-29. September 1999. Mitteilungen aus der Biologischen Bundesanstalt für Land- und Forstwirtschaft, Berlin-Dahlem, Heft 381. 2001. 133-141.</p>
 </div>
   </div>
 
