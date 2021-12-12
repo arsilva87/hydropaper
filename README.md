@@ -48,7 +48,7 @@ Afterwards, just load it and it will be ready to use.
 library("hydropaper")
 ```
 
-Now, take a look at this overview [article]() of the package. 
+Now, take a look at this [article](https://arsilva87.github.io/hydropaper/articles/overview.html) of the package. 
 
 ### Main functions
 
