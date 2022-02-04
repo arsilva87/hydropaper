@@ -87,8 +87,8 @@
 #' plot(a)
 #'
 #' @importFrom EBImage readImage display imageData rotate as.Image ocontour
-#' computeFeatures.moment computeFeatures.shape bwlabel
-#' @importFrom MASS qda
+#' computeFeatures.moment computeFeatures.shape bwlabel watershed distmap
+#' @importFrom nnet nnet
 #'
 #' @aliases analyzePaper
 #'
@@ -104,24 +104,25 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    totalpix <- nrow(im)*ncol(im)
    areapapel <- prod(paper_dim) # mm2
    # segmentation
-   hsv <- rgb2hsv(c(dat[,,1]), c(dat[,,2]), c(dat[,,3]), max = 1)
-   hue <- matrix(hsv[1, ] * 360, nr = nrow(dat), nc = ncol(dat))
-   seg1 <- hue > 210 & hue < 260
-   dd <- sweep(dat, 1:2, seg1, FUN = "*")
-   all_px <- data.frame(r = as.integer(dd[,,1]*255),
-      g = as.integer(dd[,,2]*255),
-      b = as.integer(dd[,,3]*255))
-   data(model_qda)
-   pred_qda <- MASS:::predict.qda(model_qda, all_px)
-   cl <- matrix(pred_qda$class, nrow = nrow(dat), ncol = ncol(dat))
+   all_px <- data.frame(r = as.integer(dat[,,1]*255),
+                        g = as.integer(dat[,,2]*255),
+                        b = as.integer(dat[,,3]*255))
+   data(model_nnet)
+   pred_nnet <- nnet:::predict.nnet(model_nnet, all_px, type = "class")
+   cl <- matrix(pred_nnet, nrow = nrow(dat), ncol = ncol(dat))
    seg <- cl == "gotas"
-   bin <- bwlabel(seg)
+   mind <- 50   # diam to be detected, in microm
+   rs <- sqrt(areapapel*10^6)/mind
+   s <- round(sqrt(totalpix)/rs)
+   distm <- distmap(seg)
+   bin <- watershed(distm, tolerance = 0.5,
+                    ext = 1)
    # calculations
    xy <- computeFeatures.moment(bin)
    shapes <- computeFeatures.shape(bin)
    dfs <- data.frame(x = xy[,1], y = xy[,2],
       as.data.frame(shapes))
-   outliers <- quantile(dfs$s.area, p = c(0.01, 0.99))
+   outliers <- quantile(dfs$s.area, p = c(0.001, 0.99))
    cal <- subset(dfs, s.area >= outliers[1] & s.area <= outliers[2])
    n <- nrow(cal)
    cob <- 100*sum(cal$s.area)/totalpix  # %
@@ -142,7 +143,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    dm <- mean(diams)
    maxdrop <- max(diams)
    mindrop <- min(diams)
-   size_cut <- cut(diams, breaks = c(1, 200, 400, Inf), right = FALSE)
+   size_cut <- cut(diams, breaks = c(1, 105, 340, Inf), right = FALSE)
    size_class <- 100*table(size_cut)/length(diams)
    dens <- round(n/(prod(paper_dim)/100)) # drops/cm2
    if(dens >= 50 & dens <= 70) {
@@ -157,7 +158,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    # graphics
    if (display.it) {
       display(im, method = "raster")
-      lapply(ocontour(bin), lines, col = "cyan") -> null.obj
+      lapply(ocontour(bin), lines, col = "red") -> null.obj
       #text(cal$x, cal$y, 1:n, col = "cyan", cex = 0.5)
    }
    # output
@@ -191,7 +192,7 @@ print.hydropaper <- function(obj, ...)
       "\n                 Relative amplitude:", round(obj$RA, 2),
       "\n         Largest drop (micrometers):", round(obj$maxdrop),
       "\n        Smallest drop (micrometers):", round(obj$mindrop),
-      "\nDiam. class % (<200, 200-400, >400):", round(obj$size_class, 1),
+      "\nDiam. class % (<105, 105-340, >340):", round(obj$size_class, 1),
       "\n                        CV area (%):", round(obj$CVa, 1),
       "\n                       CV diam. (%):", round(obj$CVd, 1),
       "\n                      Good to spray:", obj$r,

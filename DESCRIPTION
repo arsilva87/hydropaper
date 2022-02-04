@@ -23,7 +23,7 @@ LazyData: true
 LazyLoad: true
 Depends: R (>= 3.3.0), EBImage
 biocViews: EBImage
-Imports: EBImage, image.dlib, FNN, MASS, pbapply, rmarkdown
+Imports: EBImage, image.dlib, FNN, nnet, pbapply, rmarkdown
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/arsilva87/hydropaper
