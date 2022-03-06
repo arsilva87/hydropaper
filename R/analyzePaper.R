@@ -127,18 +127,17 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    n <- nrow(cal)
    cob <- 100*sum(cal$s.area)/totalpix  # %
    areas <- areapapel * cal$s.area/totalpix  # mm2
-   vol <- sum(areas)  # microL
-   wdmv <- which.min(cumsum(sort(areas)) < vol*0.5)
-   dmv <- 1000*2*sqrt(sort(areas)[wdmv]/(2*pi))
-   wdv1 <- which.min(cumsum(sort(areas)) < vol*0.1)
-   d1 <- 1000*2*sqrt(sort(areas)[wdv1]/(2*pi))
-   wdv9 <- which.min(cumsum(sort(areas)) < vol*0.9)
-   d9 <- 1000*2*sqrt(sort(areas)[wdv9]/(2*pi))
-   AR <- (d9 - d1)/dmv
+   diams <- 1000*2*sqrt(areas/pi)
+   vols <- (diams/1000)^3 * pi/6
+   vol <- sum(vols)   # microL
    vol_ha <- 10000 * vol/areapapel
-   radius.px <- cal$s.radius.mean
-   radius.px[radius.px == 0] <- 0.5
-   diams <- 1000*2*radius.px*sqrt(areapapel/totalpix) # microm
+   wdmv <- which.min(cumsum(sort(vols)) < vol*0.5)
+   dmv <- sort(diams)[wdmv]
+   wdv1 <- which.min(cumsum(sort(vols)) < vol*0.1)
+   d1 <- sort(diams)[wdv1]   
+   wdv9 <- which.min(cumsum(sort(vols)) < vol*0.9)
+   d9 <- sort(diams)[wdv9]
+   AR <- (d9 - d1)/dmv
    dmn <- median(diams)
    dm <- mean(diams)
    maxdrop <- max(diams)
@@ -218,7 +217,7 @@ plot.hydropaper <- function(obj, ...)
       padj = c(-1.5, 0, 0, -1.5),
       col = c("gray", "magenta", "green", "cyan"),
       font = 2, cex = 0.9))
-   vols <- 2*pi*(h$mids/2000)^2 * h$counts
+   vols <- (h$mids/1000)^3 * pi/6 * h$counts
    # vol vs diam
    par(mar = c(4.5, 4.5, 3, 1))
    plot(h$mids, vols, type = "n",

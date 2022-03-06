@@ -27,7 +27,7 @@
 #' @importFrom image.dlib image_surf
 #' @importFrom FNN get.knnx
 #'
-#' @aliases detectPaper detectCard
+#' @aliases detectPaper
 #'
 #' @export
 detectPaper <- function(x, paper_dim = c(76, 26), display.it = TRUE)

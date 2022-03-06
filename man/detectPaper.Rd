@@ -2,7 +2,6 @@
 % Please edit documentation in R/detectPaper.R
 \name{detectPaper}
 \alias{detectPaper}
-\alias{detectCard}
 \title{Detect the Water-Sensitive Paper}
 \usage{
 detectPaper(x, paper_dim = c(76, 26), display.it = TRUE)
