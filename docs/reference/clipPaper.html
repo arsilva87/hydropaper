@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Clip Image to Extract the Water-Sensitive Paper — clipPaper" />
-<meta property="og:description" content="Click on three points on the image to clip the water-sensitive paper,
+<meta property="og:description" content="Click on four points on the image or use the package
+trained neural net to automatically clip the water-sensitive paper,
 for further analysis." />
 
 
@@ -73,7 +74,7 @@ for further analysis." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">hydropaper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -127,11 +128,12 @@ for further analysis." />
     </div>
 
     <div class="ref-description">
-    <p>Click on three points on the image to clip the water-sensitive paper,
+    <p>Click on four points on the image or use the package
+trained neural net to automatically clip the water-sensitive paper,
 for further analysis.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>clipPaper</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>clipPaper</span><span class='op'>(</span><span class='va'>x</span>, method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"manual"</span><span class='op'>)</span>, align.x <span class='op'>=</span> <span class='cn'>FALSE</span>, display.it <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,6 +143,21 @@ for further analysis.</p>
       <td><p>Either an object of class <code>Image</code> from package <a href='https://rdrr.io/pkg/EBImage/man/EBImage.html'>EBImage</a>
 or a character indicating the path to the image file (.jpg, .jpeg, .png, .tif).</p></td>
     </tr>
+    <tr>
+      <th>method</th>
+      <td><p>One of the two characters: <code>"auto"</code> or <code>"manual"</code>
+to be used to clip the paper from the image.</p></td>
+    </tr>
+    <tr>
+      <th>align.x</th>
+      <td><p><code>Logical</code>. If <code>FALSE</code> (default), the paper will
+be rotated to align with the x-axis.</p></td>
+    </tr>
+    <tr>
+      <th>display.it</th>
+      <td><p><code>Logical</code>. If <code>TRUE</code> (default), the clipped
+paper will be displayed.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -148,17 +165,13 @@ or a character indicating the path to the image file (.jpg, .jpeg, .png, .tif).<
     <p>An object of class <code>Image</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='detectPaper.html'>detectPaper()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='analyzePaper.html'>analyzePaper()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='va'>path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>'images'</span>, <span class='st'>'field1.jpg'</span>, package <span class='op'>=</span> <span class='st'>'hydropaper'</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'>clipPaper</span><span class='op'>(</span><span class='va'>path</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>nenhum argumento não faltante para min; retornando Inf</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>nenhum argumento não faltante para max; retornando -Inf</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in min(loc$x):max(loc$x):</span> resultado seria um vetor muito longo</span>
-<span class='r-plt img'><img src='clipPaper-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='va'>p1</span> <span class='op'>&lt;-</span> <span class='fu'>clipPaper</span><span class='op'>(</span><span class='va'>path</span>, method <span class='op'>=</span> <span class='st'>"auto"</span>, display.it <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/pkg/EBImage/man/display.html'>display</a></span><span class='op'>(</span><span class='va'>p1</span>, <span class='st'>"raster"</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validImageObject(x):</span> objeto 'p1' não encontrado</span>
+<span class='r-plt img'><img src='clipPaper-1.png' alt='' width='700' height='433' /></span>
 <span class='r-in'></span>
 </pre>
   </div>

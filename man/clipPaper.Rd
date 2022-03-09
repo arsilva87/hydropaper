@@ -4,25 +4,35 @@
 \alias{clipPaper}
 \title{Clip Image to Extract the Water-Sensitive Paper}
 \usage{
-clipPaper(x)
+clipPaper(x, method = c("auto", "manual"), align.x = FALSE, display.it = TRUE)
 }
 \arguments{
 \item{x}{Either an object of class \code{Image} from package \link{EBImage}
 or a character indicating the path to the image file (.jpg, .jpeg, .png, .tif).}
+
+\item{method}{One of the two characters: \code{"auto"} or \code{"manual"}
+to be used to clip the paper from the image.}
+
+\item{align.x}{\code{Logical}. If \code{FALSE} (default), the paper will
+be rotated to align with the x-axis.}
+
+\item{display.it}{\code{Logical}. If \code{TRUE} (default), the clipped
+paper will be displayed.}
 }
 \value{
 An object of class \code{Image}.
 }
 \description{
-Click on three points on the image to clip the water-sensitive paper,
+Click on four points on the image or use the package
+trained neural net to automatically clip the water-sensitive paper,
 for further analysis.
 }
 \examples{
 path <- system.file('images', 'field1.jpg', package = 'hydropaper')
-p1 <- clipPaper(path)
+p1 <- clipPaper(path, method = "auto", display.it = FALSE)
 display(p1, "raster")
 
 }
 \seealso{
-\code{\link[=detectPaper]{detectPaper()}}
+\code{\link[=analyzePaper]{analyzePaper()}}
 }
