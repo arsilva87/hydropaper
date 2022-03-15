@@ -107,7 +107,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    all_px <- data.frame(r = as.integer(dat[,,1]*255),
                         g = as.integer(dat[,,2]*255),
                         b = as.integer(dat[,,3]*255))
-   data(model_nnet)
+   data(model_nnet, package = 'hydropaper')
    pred_nnet <- nnet:::predict.nnet(model_nnet, all_px, type = "class")
    cl <- matrix(pred_nnet, nrow = nrow(dat), ncol = ncol(dat))
    seg <- cl == "gotas"
@@ -134,7 +134,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    wdmv <- which.min(cumsum(sort(vols)) < vol*0.5)
    dmv <- sort(diams)[wdmv]
    wdv1 <- which.min(cumsum(sort(vols)) < vol*0.1)
-   d1 <- sort(diams)[wdv1]   
+   d1 <- sort(diams)[wdv1]
    wdv9 <- which.min(cumsum(sort(vols)) < vol*0.9)
    d9 <- sort(diams)[wdv9]
    AR <- (d9 - d1)/dmv
