@@ -4,7 +4,13 @@
 \alias{analyzeImages}
 \title{Analyze Multiple Images}
 \usage{
-analyzeImages(path, paper_dim = c(76, 26), distance = 0.7, display.it = FALSE)
+analyzeImages(
+  path,
+  paper_dim = c(76, 26),
+  distance = 0.7,
+  display.it = FALSE,
+  cl = NULL
+)
 }
 \arguments{
 \item{path}{A character giving the path to the folder containing the
@@ -19,6 +25,9 @@ to the target, in order to estimate the spray drift (\%) using the
 
 \item{display.it}{(Logical) Should the image with the bounding box of the
 paper be displayed? Default is \code{TRUE}.}
+
+\item{cl}{An integer indicating the number of parallel processes or an
+object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Default if \code{NULL}.}
 }
 \value{
 A list of objects of class \code{hydropaper}. See more in
@@ -26,7 +35,7 @@ A list of objects of class \code{hydropaper}. See more in
 }
 \description{
 Detect the water-sensitive paper from multiple images and do all the
-analyses in a run.
+analyses in a run. Parallel processing is allowed.
 }
 \examples{
 path <- system.file('images', package = 'hydropaper')

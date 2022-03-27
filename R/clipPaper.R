@@ -58,7 +58,7 @@ clipPaper <- function(x, method = c("auto", "manual"),
      all_px <- data.frame(r = as.integer(dat[, , 1] * 255),
                           g = as.integer(dat[, , 2] * 255),
                           b = as.integer(dat[, , 3] * 255))
-     data(model_nnet)
+     data(model_nnet, package = 'hydropaper')
      pred_nnet <- nnet:::predict.nnet(model_nnet, all_px,
                                       type = "class")
      cl <- matrix(pred_nnet, nrow = nrow(dat), ncol = ncol(dat))

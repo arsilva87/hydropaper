@@ -1,7 +1,7 @@
 Package: hydropaper
 Type: Package
 Title: Water-Sensitive Paper Analysis
-Version: 0.2
+Version: 0.3
 Date: 2022-03-09
 Description: Detect water-sensitive paper from field images and make
              analyses of spray performance.

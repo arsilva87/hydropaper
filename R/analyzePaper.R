@@ -87,7 +87,7 @@
 #' plot(a)
 #'
 #' @importFrom EBImage readImage display imageData rotate as.Image ocontour
-#' computeFeatures.moment computeFeatures.shape bwlabel watershed distmap
+#' watershed distmap
 #' @importFrom nnet nnet
 #'
 #' @aliases analyzePaper
@@ -115,34 +115,47 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    rs <- sqrt(areapapel*10^6)/mind
    s <- round(sqrt(totalpix)/rs)
    distm <- distmap(seg)
-   bin <- watershed(distm, tolerance = 0.5,
-                    ext = 1)
+   bin <- watershed(distm, tolerance = 0.5, ext = s)
    # calculations
-   xy <- computeFeatures.moment(bin)
-   shapes <- computeFeatures.shape(bin)
-   dfs <- data.frame(x = xy[,1], y = xy[,2],
-      as.data.frame(shapes))
-   outliers <- quantile(dfs$s.area, p = c(0.001, 0.99))
-   cal <- subset(dfs, s.area >= outliers[1] & s.area <= outliers[2])
-   n <- nrow(cal)
-   cob <- 100*sum(cal$s.area)/totalpix  # %
-   areas <- areapapel * cal$s.area/totalpix  # mm2
+   oo <- ocontour(bin)
+   res <- paper_dim / dim(bin)  # mm/px
+   A <- sapply(oo, function(x) {
+     g <- sweep(x, 2L, res, "*")
+     n <- nrow(g)
+     cen <- apply(g, 2L, mean)
+     g <- rbind(g, g[1,])
+     sum(sapply(1:n, function(k) {
+       x1y2 <- abs(g[k,1] - cen[1]) * abs(g[k+1,2] - cen[2])
+       x2y1 <- abs(g[k+1,1] - cen[1]) * abs(g[k,2] - cen[2])
+       abs(x1y2 - x2y1)
+     })) * 0.5
+   })
+   asp <- sapply(oo, function(w) {
+     d <- apply(apply(w, 2L, range), 2L, diff)
+     max(d)/min(d)
+   })
+   non_null <- A > 0 & asp < 3
+   areas <- A[non_null]  # mm2
+   n <- length(areas)
+   cob <- 100*sum(areas)/areapapel  # %
    diams <- 1000*2*sqrt(areas/pi)
    vols <- (diams/1000)^3 * pi/6
    vol <- sum(vols)   # microL
-   vol_ha <- 10000 * vol/areapapel
-   wdmv <- which.min(cumsum(sort(vols)) < vol*0.5)
+   vol_ha <- 10000*vol/areapapel
+   wdmv <- which.min(cumsum(sort(vols)) <= vol*0.5)
    dmv <- sort(diams)[wdmv]
-   wdv1 <- which.min(cumsum(sort(vols)) < vol*0.1)
+   wdv1 <- which.min(cumsum(sort(vols)) <= vol*0.1)
    d1 <- sort(diams)[wdv1]
-   wdv9 <- which.min(cumsum(sort(vols)) < vol*0.9)
+   wdv9 <- which.min(cumsum(sort(vols)) <= vol*0.9)
    d9 <- sort(diams)[wdv9]
    AR <- (d9 - d1)/dmv
    dmn <- median(diams)
    dm <- mean(diams)
    maxdrop <- max(diams)
    mindrop <- min(diams)
-   size_cut <- cut(diams, breaks = c(1, 105, 340, Inf), right = FALSE)
+   if(mindrop < min(res)*1000) mindrop <- min(res)*1000
+   size_cut <- cut(diams, breaks = c(1, 105, 340, Inf),
+                   right = FALSE)
    size_class <- 100*table(size_cut)/length(diams)
    dens <- round(n/(prod(paper_dim)/100)) # drops/cm2
    if(dens >= 50 & dens <= 70) {
@@ -157,8 +170,7 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    # graphics
    if (display.it) {
       display(im, method = "raster")
-      lapply(ocontour(bin), lines, col = "red") -> null.obj
-      #text(cal$x, cal$y, 1:n, col = "cyan", cex = 0.5)
+      lapply(oo[non_null], lines, col = "red") -> null.obj
    }
    # output
    cv <- function(x) 100*sd(x)/mean(x)

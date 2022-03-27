@@ -37,7 +37,7 @@ detectPaper <- function(x, paper_dim = c(76, 26), display.it = TRUE)
    storage.mode(im.) <- "integer"
    dat <- imageData(im.)
    a <- round(aperm(dat, perm = c(3, 1, 2)))
-   data(trained_surf)
+   data(trained_surf, package = 'hydropaper')
    surfs <- trained_surf
    paper_asp_ratio <- max(paper_dim)/min(paper_dim)
    sf <- image_surf(a, detection_threshold = 5)
