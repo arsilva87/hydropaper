@@ -87,7 +87,7 @@
 #' plot(a)
 #'
 #' @importFrom EBImage readImage display imageData rotate as.Image ocontour
-#' watershed distmap bwlabel
+#' opening watershed distmap
 #' @importFrom nnet nnet
 #'
 #' @aliases analyzePaper
@@ -114,10 +114,11 @@ analyzePaper <- function(x, paper_dim = c(76, 26),
    mind <- 50   # diam to be detected, in microm
    rs <- sqrt(areapapel*10^6)/mind
    s <- round(sqrt(totalpix)/rs)
+   if(s < 3) bs <- 3 else bs <- s
+   seg <- opening(seg, kern = makeBrush(bs))
    distm <- distmap(seg)
    bin <- watershed(distm, tolerance = 0.6, ext = s)
    # calculations
-   bin <- bwlabel(bin)
    oo <- ocontour(bin)
    res <- paper_dim / dim(bin)  # mm/px
    A <- sapply(oo, function(x) {
