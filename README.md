@@ -5,6 +5,10 @@
 
 The R package **hydropaper** is up to detect water-sensitive paper from field images and to make analyses of spray performance.
 
+### Supplementary materials
+
+[![](https://img.shields.io/badge/Download-Document-yellow?style=for-the-badge&logo=microsoftword)]([[https://github.com/arsilva87/hydropaper/raw/main/manual.docx](https://github.com/arsilva87/hydropaper/raw/refs/heads/master/inst/exdata/f%20-%20SUPPLEMENTARY%20MATERIALS.docx)](https://github.com/arsilva87/hydropaper/raw/refs/heads/master/inst/exdata/f%20-%20SUPPLEMENTARY%20MATERIALS.docx))
+
 # Getting started
 
 ### Taking images in field
