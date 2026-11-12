@@ -1,7 +1,9 @@
-pandoc: 2.14.2
-pkgdown: 1.6.1
+pandoc: '3.4'
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   overview: overview.html
-last_built: 2022-03-09T10:46Z
-
+last_built: 2026-11-12T21:35Z
+urls:
+  reference: https://arsilva87.github.io/hydropaper/reference
+  article: https://arsilva87.github.io/hydropaper/articles
